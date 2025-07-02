@@ -18,6 +18,17 @@ const validateUser = [
     .withMessage('Password must be at least 6 characters'),
 ];
 
+const validateFolder = [
+	 // First Name
+  body('folder')
+    .isLength({ min: 2, max: 50 })
+    .withMessage('Folder name should be at least 2 characters and not more than 50')
+    .matches(/^[\w\s\-\/&()]+$/)
+    .withMessage('Special characters are not allowed. Use only letters, numbers, spaces, and - / & ( )')
+    .trim()
+    .escape(),
+]
+
 
 exports.home = (req,res)=>{
 	res.render('index',{
@@ -30,6 +41,53 @@ exports.uploadPage = (req,res)=>{
 	    errors:{}
 	})
 }
+exports.viewFolders = async (req,res)=>{
+	try{
+		const folders = await prisma.folder.findMany()
+
+		res.render('viewFolders',{
+		    errors:{},
+		    folders:folders
+		})
+	} catch(err){
+		console.error('Error fetching folders',err)
+		res.status(500).send(err)
+	}
+}
+
+exports.uploadFile = (req,res)=>{
+	console.log('Here is file:',req.file)
+	res.send('FIle got')
+}
+
+exports.createFolder = (req,res)=>{
+	res.render('createFolder')
+}
+
+exports.createFolderPost = [
+	validateFolder,
+	async (req, res) => {
+		const errors = validationResult(req)
+		if(!errors.isEmpty()){
+			return res.status(400).render('index',{
+				errors: errors.array(),
+				oldInput:req.body
+			})
+		}
+	  try {
+	  	const folder = await prisma.folder.create({
+	  		data:{
+	  			name: req.body.folder
+	  		}
+	  	})
+	  	res.redirect('/viewFolders')
+		} catch (err) {
+		  console.error(err);
+		  res.status(500).send("Error Creating folder");
+		}
+
+	}
+]
 
 
 exports.signUp  =  [

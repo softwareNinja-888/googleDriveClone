@@ -27,3 +27,19 @@ model Session {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+
+model Folder {
+  id Int @id @default(autoincrement())
+  name String @unique
+  files File[]
+}
+
+model File {
+  id Int @default(autoincrement()) @unique
+  name String
+  size Int
+  uploadTime DateTime @default(now())
+  folder Folder @relation(fields:[folderId], references: [id])
+  folderId Int
+}
