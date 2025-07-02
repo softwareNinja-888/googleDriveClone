@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const prisma = require('../prisma/client');
 
 function initPassport(passport) {
-  passport.use(new LocalStrategy(async (email, password, done) => {
+  passport.use(new LocalStrategy({ usernameField: 'email' },async (email, password, done) => {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return done(null, false, { message: 'No user found' });
 

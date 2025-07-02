@@ -1,7 +1,8 @@
-
 const { body, validationResult } = require("express-validator");
 const prisma = require('../prisma/client')
 const bcrypt = require('bcryptjs')
+const passport = require('passport');
+
 
 
 const validateUser = [
@@ -30,6 +31,7 @@ exports.uploadPage = (req,res)=>{
 	})
 }
 
+
 exports.signUp  =  [
 	validateUser,
 	async (req, res) => {
@@ -41,17 +43,29 @@ exports.signUp  =  [
 			})
 		}
 	  try {
+	  	// TODO:IMPLEMENT FUNC:
+	  	const {email,password } = req.body
+		  const existingUser = await prisma.user.findUnique({ where: {email } });
+	    if (existingUser) {
+	      return res.status(400).send('User already exists');
+	    }
 			const formData = req.body;
 			const hashedPassword = await bcrypt.hash(req.body.password,10)
 			formData.password = hashedPassword;
-			await prisma.user.create({
+			const user = await prisma.user.create({
 				data:{
 					email: formData.email,
 					password: formData.password
 				}
 			})
 			// REDIRECT TO OTHER ROUTE:
-     		res.redirect('/upload')
+			req.login(user,(err)=>{
+				if (err){
+			    console.error('Login error:', err);
+			    return res.status(500).send('Could not log in after signup');
+			  }
+				res.redirect('upload')
+			})
 		} catch (err) {
 		  console.error(err);
 		  res.status(500).send("Error Signing up");
