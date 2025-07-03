@@ -36,11 +36,50 @@ exports.home = (req,res)=>{
 	})
 }
 
-exports.uploadPage = (req,res)=>{
-	res.render('upload',{
-	    errors:{}
-	})
+exports.uploadPage = async (req,res)=>{
+
+	try{
+		// FIND FOLDER FROM USER:
+		const folders = await prisma.folder.findMany({
+			where: {
+				userId: req.user.id
+			}
+		})
+		res.render('upload',{
+		    errors:{},
+		    folders:folders
+		})
+	} catch(err){
+		console.error('Error fetching folders',err)
+		res.status(500).send(err)
+	}
 }
+
+exports.uploadFile = async (req, res) => {
+  try {
+    const fileInfo = req.file;
+
+    if (!fileInfo) {
+      return res.status(400).send("No file uploaded");
+    }
+    
+    const createdFile = await prisma.file.create({
+      data: {
+        name: fileInfo.originalname,
+        size: fileInfo.size,
+        mimetype: fileInfo.mimetype,
+        uploadPath: fileInfo.path,
+        folderId: Number(req.body.folderId),
+      }
+    });
+
+    res.redirect(`/viewFile/${createdFile.id}`);
+  } catch (err) {
+    console.error('Error uploading file', err);
+    res.status(500).send(err.message || err);
+  }
+};
+
 exports.viewFolders = async (req,res)=>{
 	try{
 		// FIND FOLDER FROM USER:
@@ -60,9 +99,17 @@ exports.viewFolders = async (req,res)=>{
 	}
 }
 
-exports.uploadFile = (req,res)=>{
-	console.log('Here is file:',req.file)
-	res.send('FIle got')
+exports.viewFile = async (req,res)=>{
+
+	const file = await prisma.file.findMany({
+		where: {
+			id: Number(req.params.id),
+		}
+	})
+
+	res.render('viewFile',{
+		fileInfo:file
+	})
 }
 
 exports.createFolder = (req,res)=>{

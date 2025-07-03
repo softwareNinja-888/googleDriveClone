@@ -44,5 +44,8 @@ router.post('/remove/:id',ensureLoggedIn,controllers.removeFolder)
 // Update Folder
 router.post('/update/:id',ensureLoggedIn,controllers.updateFolder)
 
+// View File
+router.get('/viewFile/:id',ensureLoggedIn,controllers.viewFile)
+
 
 module.exports=router

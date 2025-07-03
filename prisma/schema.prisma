@@ -36,7 +36,8 @@ model File {
   id         Int      @id @default(autoincrement())
   name       String
   size       Int
-  mimetype   String   // optional: to store file type
+  mimetype   String   
+  uploadPath String
   folder     Folder   @relation(fields: [folderId], references: [id])
   folderId   Int
   uploadTime DateTime @default(now())
