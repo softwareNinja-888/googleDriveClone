@@ -247,7 +247,7 @@ exports.signUp  =  [
 			    console.error('Login error:', err);
 			    return res.status(500).send('Could not log in after signup');
 			  }
-				res.redirect('upload')
+				res.redirect('createFolder')
 			})
 		} catch (err) {
 		  console.error(err);

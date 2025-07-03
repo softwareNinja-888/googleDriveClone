@@ -23,7 +23,7 @@ router.get('/',controllers.home)
 
 router.post('/signup',controllers.signUp)
 router.post('/login',passport.authenticate('local', {
-  successRedirect: '/upload',
+  successRedirect: '/createFolder',
   failureRedirect: '/',
 }))
 
