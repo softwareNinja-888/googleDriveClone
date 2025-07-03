@@ -43,7 +43,12 @@ exports.uploadPage = (req,res)=>{
 }
 exports.viewFolders = async (req,res)=>{
 	try{
-		const folders = await prisma.folder.findMany()
+		// FIND FOLDER FROM USER:
+		const folders = await prisma.folder.findMany({
+			where: {
+				userId: req.user.id
+			}
+		})
 
 		res.render('viewFolders',{
 		    errors:{},
@@ -77,7 +82,8 @@ exports.createFolderPost = [
 	  try {
 	  	const folder = await prisma.folder.create({
 	  		data:{
-	  			name: req.body.folder
+	  			name: req.body.folder,
+	  			userId: req.user.id
 	  		}
 	  	})
 	  	res.redirect('/viewFolders')
@@ -89,6 +95,22 @@ exports.createFolderPost = [
 	}
 ]
 
+exports.removeFolder = async (req, res) => {
+	  try {
+	  	const {id} = req.params
+	  	const folder = await prisma.folder.delete({
+	  		where :{
+	  			id: Number(id)
+	  		}
+	  	})
+
+	  	res.redirect('/viewFolders')
+		} catch (err) {
+		  console.error(err);
+		  res.status(500).send("Error Deleting folder");
+		}
+
+	}
 
 exports.signUp  =  [
 	validateUser,

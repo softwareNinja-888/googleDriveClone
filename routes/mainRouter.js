@@ -39,7 +39,7 @@ router.get('/createFolder',ensureLoggedIn,controllers.createFolder)
 router.post('/createFolder',ensureLoggedIn,controllers.createFolderPost)
 
 // // Remove Folder
-// router.post('/remove/:id',ensureLoggedIn,controllers.removeFolder)
+router.post('/remove/:id',ensureLoggedIn,controllers.removeFolder)
 
 // // Update Folder
 // router.post('/update/:id',ensureLoggedIn,controllers.updateFolder)

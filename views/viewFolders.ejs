@@ -3,27 +3,46 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Upload</title>
+	<title>View Folders</title>
 	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
 	<%-include('./partials/navbar')%>
-	<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
-	  <% folders.forEach(function(folder) { %>
-	    <div class="flex items-center gap-2 p-3 bg-gray-100 rounded-xl shadow-sm hover:bg-gray-200 transition">
-	      <svg
-	        class="w-6 h-6 text-yellow-500"
-	        fill="none"
-	        stroke="currentColor"
-	        stroke-width="2"
-	        viewBox="0 0 24 24"
-	      >
-	        <path d="M3 7h5l2 2h11v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-	      </svg>
-	      <span class="text-gray-800 font-medium"><%= folder.name %></span>
-	    </div>
-	  <% }) %>
-	</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
+  <% folders.forEach(function(folder) { %>
+    <div class="flex items-center justify-between gap-2 p-3 bg-gray-100 rounded-xl shadow-sm transition">
+      <div class="flex items-center gap-2">
+        <svg
+          class="w-6 h-6 text-yellow-500"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path d="M3 7h5l2 2h11v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+        </svg>
+        <span class="text-gray-800 font-medium"><%= folder.name %></span>
+      </div>
+
+      <!-- Trash Bin Icon -->
+      <form action="/remove/<%=folder.id%>" method="POST">
+        <input type="hidden" name="folderName" value="<%= folder.name %>">
+        <button type="submit" class="text-red-500 hover:text-red-700 cursor-pointer">
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M9 7V4h6v3m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7z" />
+          </svg>
+        </button>
+      </form>
+    </div>
+  <% }) %>
+</div>
+
 
 </body>
 </html>

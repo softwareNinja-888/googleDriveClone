@@ -14,9 +14,34 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email String @unique
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
   password String
+  folders Folder[]
+}
+
+model Folder {
+  id        Int      @id @default(autoincrement())
+  name      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  files     File[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, userId])
+}
+
+model File {
+  id         Int      @id @default(autoincrement())
+  name       String
+  size       Int
+  mimetype   String   // optional: to store file type
+  folder     Folder   @relation(fields: [folderId], references: [id])
+  folderId   Int
+  uploadTime DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Session {
@@ -28,18 +53,3 @@ model Session {
   updatedAt DateTime @updatedAt
 }
 
-
-model Folder {
-  id Int @id @default(autoincrement())
-  name String @unique
-  files File[]
-}
-
-model File {
-  id Int @default(autoincrement()) @unique
-  name String
-  size Int
-  uploadTime DateTime @default(now())
-  folder Folder @relation(fields:[folderId], references: [id])
-  folderId Int
-}
