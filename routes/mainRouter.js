@@ -33,6 +33,7 @@ router.get('/logout',logout)
 
 // View folder
 router.get('/viewFolders',ensureLoggedIn,controllers.viewFolders)
+router.get('/viewFolders/:folderId',ensureLoggedIn,controllers.viewFolderFiles)
 
 // Create Folder
 router.get('/createFolder',ensureLoggedIn,controllers.createFolder)
@@ -45,7 +46,7 @@ router.post('/remove/:id',ensureLoggedIn,controllers.removeFolder)
 router.post('/update/:id',ensureLoggedIn,controllers.updateFolder)
 
 // View File
-router.get('/viewFile/:id',ensureLoggedIn,controllers.viewFile)
+router.get('/files/:id/download', controllers.downloadFile);
 
 
 module.exports=router

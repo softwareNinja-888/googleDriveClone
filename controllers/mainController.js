@@ -3,6 +3,8 @@ const prisma = require('../prisma/client')
 const bcrypt = require('bcryptjs')
 const passport = require('passport');
 
+const path = require('path');
+const fs = require('fs');
 
 
 const validateUser = [
@@ -73,7 +75,7 @@ exports.uploadFile = async (req, res) => {
       }
     });
 
-    res.redirect(`/viewFile/${createdFile.id}`);
+    res.redirect(`/viewFolders`);
   } catch (err) {
     console.error('Error uploading file', err);
     res.status(500).send(err.message || err);
@@ -99,17 +101,48 @@ exports.viewFolders = async (req,res)=>{
 	}
 }
 
-exports.viewFile = async (req,res)=>{
 
-	const file = await prisma.file.findMany({
-		where: {
-			id: Number(req.params.id),
-		}
-	})
+exports.viewFolderFiles = async (req,res)=>{
+	try{
+		const files = await prisma.file.findMany({
+			where: {
+				folderId: Number(req.params.folderId),
+			}
+		})
 
-	res.render('viewFile',{
-		fileInfo:file
-	})
+		res.render('viewFile',{
+		    errors:{},
+		    files:files
+		})
+	} catch(err){
+		console.error('Error fetching folders',err)
+		res.status(500).send(err)
+	}
+}
+
+
+exports.downloadFile = async (req,res)=>{
+	 try {
+    const fileId = parseInt(req.params.id);
+    const file = await prisma.file.findUnique({ where: { id: fileId } });
+    console.log('file:',file)
+
+    if (!file) return res.status(404).send('File not found');
+
+    const filePath = path.join(__dirname, '..', file.uploadPath);
+
+    console.log('Name:',filePath)
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send('File not found on disk');
+    }
+
+    res.download(filePath, file.name); // sends with original name
+  } catch (err) {
+    console.error('Download error:', err);
+    res.status(500).send('Internal Server Error');
+  }
 }
 
 exports.createFolder = (req,res)=>{

@@ -1,48 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>View File</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>View File</title>
 	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-	<%-include('./partials/navbar')%>
-	<div class="max-w-5xl mx-auto p-6">
-	  <h1 class="text-3xl font-bold mb-6 text-gray-900">Files</h1>
+  <%- include('./partials/navbar') %>
+  <div class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-gray-900">Files</h1>
 
-	  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-	    <% fileInfo.forEach(file => { %>
-	      <div class="bg-white rounded-2xl shadow-md p-5 flex flex-col justify-between hover:shadow-lg transition duration-200">
-	        <!-- File Icon and Name -->
-	        <div class="flex items-center gap-4 mb-4">
-	          <!-- Simple file icon SVG -->
-	          <svg class="w-10 h-10 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-	            <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-	            <path stroke-linecap="round" stroke-linejoin="round" d="M14 2v6h6" />
-	          </svg>
-	          <div class="flex flex-col">
-	            <span class="text-lg font-semibold text-gray-800 truncate max-w-xs" title="<%= file.name %>"><%= file.name %></span>
-	            <span class="text-sm text-gray-500 capitalize"><%= file.mimetype %></span>
-	          </div>
-	        </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <% files.forEach(file => { %>
+        <div class="bg-white rounded-2xl shadow-md p-5 flex flex-col justify-between hover:shadow-lg transition duration-200">
+          <!-- File Icon and Name -->
+          <div class="flex items-center gap-4 mb-4">
+            <svg class="w-10 h-10 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 2v6h6" />
+            </svg>
+            <div class="flex flex-col">
+              <span class="text-lg font-semibold text-gray-800 truncate max-w-xs" title="<%= file.name %>"><%= file.name %></span>
+              <span class="text-sm text-gray-500 capitalize"><%= file.mimetype %></span>
+            </div>
+          </div>
 
-	        <!-- File Details -->
-	        <div class="text-gray-600 text-sm space-y-1">
-	          <p><strong>Size:</strong> <%= (file.size / 1024).toFixed(2) %> KB</p>
-	          <p><strong>Uploaded:</strong> <%= new Date(file.uploadTime).toLocaleString() %></p>
-	          <p><strong>Created At:</strong> <%= new Date(file.createdAt).toLocaleString() %></p>
-	          <p><strong>Last Updated:</strong> <%= new Date(file.updatedAt).toLocaleString() %></p>
-	        </div>
+          <!-- File Details -->
+          <div class="text-gray-600 text-sm space-y-1">
+            <p><strong>Size:</strong> <%= (file.size / 1024).toFixed(2) %> KB</p>
+            <p><strong>Uploaded:</strong> <%= new Date(file.uploadTime).toLocaleString() %></p>
+            <p><strong>Created At:</strong> <%= new Date(file.createdAt).toLocaleString() %></p>
+            <p><strong>Last Updated:</strong> <%= new Date(file.updatedAt).toLocaleString() %></p>
+          </div>
 
-	        <!-- Download Button -->
-	        <a href="/files/<%= file.id %>/download" class="mt-5 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-center">
-	          Download
-	        </a>
-	      </div>
-	    <% }) %>
-	  </div>
-	</div>
-
+          <!-- Download Button -->
+          <a href="/files/<%= file.id %>/download" class="mt-5 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-center">
+            Download
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  </div>
 </body>
 </html>
