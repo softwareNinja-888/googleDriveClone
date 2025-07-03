@@ -95,6 +95,29 @@ exports.createFolderPost = [
 	}
 ]
 
+
+
+exports.updateFolder = async (req, res) => {
+	  try {
+	  	const {id} = req.params
+
+	  	const folder = await prisma.folder.update({
+	  		where :{
+	  			id: Number(id)
+	  		},
+	  		data:{
+	  			name: req.body.folderName
+	  		}
+	  	})
+	  	res.redirect('/viewFolders')
+		} catch (err) {
+		  console.error(err);
+		  res.status(500).send("Error Updatingfolder");
+		}
+
+}
+
+
 exports.removeFolder = async (req, res) => {
 	  try {
 	  	const {id} = req.params

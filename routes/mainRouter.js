@@ -41,10 +41,8 @@ router.post('/createFolder',ensureLoggedIn,controllers.createFolderPost)
 // // Remove Folder
 router.post('/remove/:id',ensureLoggedIn,controllers.removeFolder)
 
-// // Update Folder
-// router.post('/update/:id',ensureLoggedIn,controllers.updateFolder)
+// Update Folder
+router.post('/update/:id',ensureLoggedIn,controllers.updateFolder)
 
-// // Delete Folder
-// router.post('/delete/:id',ensureLoggedIn,controllers.deleteFolder)
 
 module.exports=router

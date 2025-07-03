@@ -5,29 +5,84 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>View Folders</title>
 	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script>
+    // JS to toggle the rename input
+    function toggleEdit(id) {
+      const span = document.getElementById(`name-span-${id}`);
+      const form = document.getElementById(`rename-form-${id}`);
+      span.classList.add("hidden");
+      form.classList.remove("hidden");
+      form.querySelector("input").focus();
+    }
+
+    function submitOnEnter(event, formId) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        document.getElementById(formId).submit();
+      }
+    }
+  </script>
 </head>
 <body>
 	<%-include('./partials/navbar')%>
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
   <% folders.forEach(function(folder) { %>
-    <div class="flex items-center justify-between gap-2 p-3 bg-gray-100 rounded-xl shadow-sm transition">
-      <div class="flex items-center gap-2">
-        <svg
-          class="w-6 h-6 text-yellow-500"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          viewBox="0 0 24 24"
-        >
-          <path d="M3 7h5l2 2h11v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-        </svg>
-        <span class="text-gray-800 font-medium"><%= folder.name %></span>
+    <div class="flex flex-col justify-between bg-white border border-gray-200 rounded-2xl shadow-md p-6 h-52 hover:shadow-lg transition duration-200">
+      <!-- Folder Icon and Name -->
+      <div class="flex items-start justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <svg
+            class="w-10 h-10 text-yellow-500"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path d="M3 7h5l2 2h11v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+          </svg>
+
+          <!-- Folder Name (span OR input) -->
+          <div>
+            <span id="name-span-<%= folder.id %>" class="text-xl text-gray-800 font-semibold">
+              <%= folder.name %>
+            </span>
+
+            <!-- Rename Form -->
+            <form
+              id="rename-form-<%= folder.id %>"
+              action="/update/<%= folder.id %>"
+              method="POST"
+              class="hidden"
+            >
+              <input
+                type="text"
+                name="folderName"
+                value="<%= folder.name %>"
+                class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring focus:ring-blue-300"
+                onkeydown="submitOnEnter(event, 'rename-form-<%= folder.id %>')"
+              />
+            </form>
+          </div>
+        </div>
+
+        <!-- Edit Button -->
+        <button title="Edit folder name" class="text-blue-500 hover:text-blue-700" onclick="toggleEdit(<%= folder.id %>)">
+          <svg
+            class="w-10 h-10 cursor-pointer"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l6.586-6.586a2 2 0 112.828 2.828L11.828 13.828A2 2 0 0110.414 14H9v-1.414a2 2 0 01.586-1.414z" />
+          </svg>
+        </button>
       </div>
 
-      <!-- Trash Bin Icon -->
-      <form action="/remove/<%=folder.id%>" method="POST">
+      <!-- Delete Button -->
+      <form action="/remove/<%= folder.id %>" method="POST" class="self-end">
         <input type="hidden" name="folderName" value="<%= folder.name %>">
-        <button type="submit" class="text-red-500 hover:text-red-700 cursor-pointer">
+        <button type="submit" class="text-red-500 hover:text-red-700 flex items-center gap-1 text-sm">
           <svg
             class="w-5 h-5"
             fill="none"
@@ -37,11 +92,13 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M9 7V4h6v3m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7z" />
           </svg>
+          Delete
         </button>
       </form>
     </div>
   <% }) %>
 </div>
+
 
 
 </body>
